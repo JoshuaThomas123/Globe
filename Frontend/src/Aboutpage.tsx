@@ -1,38 +1,23 @@
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from "react";
+import Globe from "react-globe.gl";
 
-function AboutPage() {
-  const navigate = useNavigate()
+export default function App() {
+  const [countries, setCountries] = useState<object[]>([]);
+
+  useEffect(() => {
+    fetch("https://raw.githubusercontent.com/vasturiano/react-globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson")
+      .then((r) => r.json())
+      .then((d) => setCountries(d.features));
+  }, []);
 
   return (
-    <>
-      <section className="relative h-screen">
-
-        <button className="absolute top-4 right-4 bg-blue-500 text-white rounded px-4 py-2">
-          LogIn
-        </button>
-
-        <h1 className="absolute top-4 left-4 text-black rounded px-4 py-2">
-          Globe
-        </h1>
-
-        <button
-          className="absolute top-4 left-[250px] bg-blue-500 text-white rounded px-5 py-2"
-          onClick={() => navigate('/')}
-        >
-          Home
-        </button>
-
-        <button className="absolute top-4 left-[300px] bg-blue-500 text-white rounded px-5 py-2">
-          Search
-        </button>
-
-        <button className="absolute top-4 left-[350px] bg-blue-500 text-white rounded px-5 py-2">
-          About
-        </button>
-
-      </section>
-    </>
-  )
+    <Globe
+      globeImageUrl="https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+      polygonsData={countries}
+      polygonCapColor={() => "rgba(0,0,0,0)"}
+      polygonStrokeColor={() => "#fff"}
+      polygonLabel={(d: any) => d.properties.NAME}
+      onPolygonClick={(d) => console.log(d)}
+    />
+  );
 }
-
-export default AboutPage
